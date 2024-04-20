@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LocateMe</title>
+    <!-- Include Leaflet library -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+    <button id="getLocationBtn">Get My Location</button>
+    <div id="map"></div>
+
+    <script>
+        // Get references to the button and map div
+        const getLocationBtn = document.getElementById('getLocationBtn');
+        const mapDiv = document.getElementById('map');
+
+        // Function to handle location retrieval
+        function getLocation() {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(showMap, showError);
+            } else {
+                alert('Geolocation is not available in this browser.');
+            }
+        }
+
+        // Function to display an error message
+        function showError(error) {
+            alert('Error getting location: ' + error.message);
+        }
+
+        // Function to display the user's location on a map
+        function showMap(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            // Create a map using Leaflet
+            const map = L.map(mapDiv).setView([latitude, longitude], 15);
+
+            // Add a tile layer (e.g., OpenStreetMap) to the map
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Add a marker at the user's location
+            L.marker([latitude, longitude]).addTo(map)
+                .bindPopup('Your Location')
+                .openPopup();
+        }
+
+        // Add a click event listener to the button
+        getLocationBtn.addEventListener('click', getLocation);
+    </script>
+</body>
+</html>
